@@ -127,3 +127,5 @@ STATIC_URL = '/static/'
 GRAPHENE = {
     'SCHEMA': 'backend.schema.schema'
 }
+
+GQL_URI = '/gql'

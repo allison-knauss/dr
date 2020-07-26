@@ -1,42 +1,45 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { render } from "react-dom";
 import { Button } from '@material-ui/core';
 import { ApolloProvider } from '@apollo/client';
 
-import { ApolloClient, InMemoryCache } from '@apollo/client';
-import { useQuery, gql } from '@apollo/client';
-import { useApolloClient } from '@apollo/client';
+import {
+    ApolloClient,
+    InMemoryCache,
+    useQuery,
+    gql
+} from '@apollo/client';
+
+import { SETTINGS_QUERY } from '../data/settings';
 
 const client = new ApolloClient({
-    uri: 'http://127.0.0.1:8000/gql',
+    uri: document.getElementsByTagName('meta').gql.content,
     cache: new InMemoryCache()
 });
 
-const SETTINGS_QUERY = gql`
-    query GetAppSettings {
-        appSettings {
-            id, name, type, value
-        }
-    }
-`
-
 const App = () => {
     const { loading, error, data } = useQuery(SETTINGS_QUERY);
-
-    console.log(loading, error, data);
-
     if (loading) return <p>Loading...</p>;
+    if (error) {
+        console.error(error);
+        return <p>Failed to load data.</p>;
+    }
 
     return (
       <div>
         <ul>
         {data.appSettings.map(s =>
-            <li key={s.id}>{s.name}, {s.type}, {s.value}</li>
+            <SettingItem key={s.id} setting={s} />
         )}
         </ul>
         <Button variant="contained" color="primary">Hi!</Button>
       </div>
     );
+};
+
+const SettingItem = (props) => {
+    let { id, name, type, value } = props.setting;
+    return(<li key={id}>{name}: {value}</li>);
 };
 
 export default App;

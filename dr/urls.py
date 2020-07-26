@@ -18,10 +18,16 @@ from django.urls import path
 from django.conf.urls import include
 from graphene_django.views import GraphQLView
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
 urlpatterns = [
-    path('graphiql', GraphQLView.as_view(graphiql=True)),
     path('gql', csrf_exempt(GraphQLView.as_view(graphiql=False))),
     path('api/', include('backend.urls')),
     path('', include('frontend.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path('graphiql', GraphQLView.as_view(graphiql=True)),
+    ]
+
